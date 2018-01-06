@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour {
 
+    Rigidbody rigidBody;
+
 	// Use this for initialization
 	void Start () {
-        
+        rigidBody = gameObject.GetComponent<Rigidbody>();
 	}
 
 
@@ -20,7 +22,7 @@ public class Rocket : MonoBehaviour {
     {
         if(Input.GetKey(KeyCode.Space))
         {
-            print("Space Pressed!");
+            rigidBody.AddRelativeForce(Vector3.up);
         }
         if(Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
         {
