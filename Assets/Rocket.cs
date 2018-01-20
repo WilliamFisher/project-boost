@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour {
 
@@ -13,10 +11,12 @@ public class Rocket : MonoBehaviour {
 
     Rigidbody rigidBody;
     AudioSource rocketAudio;
+    Scene scene;
 
 	// Use this for initialization
 	void Start ()
     {
+        scene = SceneManager.GetActiveScene();
         rigidBody = gameObject.GetComponent<Rigidbody>();
         rocketAudio = gameObject.GetComponent<AudioSource>();
 	}
@@ -68,14 +68,15 @@ public class Rocket : MonoBehaviour {
         switch (collision.gameObject.tag)
         {
             case "Friendly":
-                print("Ok");
                 break;
-            case "Fuel":
-                print("Fuel");
+            case "Finish":
+                if(scene.buildIndex < 1)
+                {
+                    SceneManager.LoadScene(scene.buildIndex + 1);
+                }
                 break;
             default:
-                print("Dead");
-                //die
+                SceneManager.LoadScene(scene.buildIndex);
                 break;
         }
     }
