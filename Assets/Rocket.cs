@@ -3,11 +3,11 @@ using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour {
 
-    [SerializeField]
-    float rcsThrust = 80f;
-
-    [SerializeField]
-    float mainThrust = 100f;
+    [SerializeField] float rcsThrust = 80f;
+    [SerializeField] float mainThrust = 100f;
+    [SerializeField] AudioClip mainEngine;
+    [SerializeField] AudioClip success;
+    [SerializeField] AudioClip death;
 
     Rigidbody rigidBody;
     AudioSource rocketAudio;
@@ -42,7 +42,7 @@ public class Rocket : MonoBehaviour {
             rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
             if (!rocketAudio.isPlaying)
             {
-                rocketAudio.Play();
+                rocketAudio.PlayOneShot(mainEngine);
             }
         }
         else
@@ -77,17 +77,31 @@ public class Rocket : MonoBehaviour {
             case "Friendly":
                 break;
             case "Finish":
-                if(scene.buildIndex < 1)
-                {
-                    state = State.Transcending;
-                    Invoke("LoadNextScene", 1f);
-                }
+                StartSuccessSequence();
                 break;
             default:
-                state = State.Dying;
-                Invoke("ReloadScene", 1.5f);
+                StartDeathSequence();
                 break;
         }
+    }
+
+    void StartSuccessSequence()
+    {
+        if (scene.buildIndex < 1)
+        {
+            state = State.Transcending;
+            rocketAudio.Stop();
+            rocketAudio.PlayOneShot(success);
+            Invoke("LoadNextScene", 1f);
+        }
+    }
+
+    void StartDeathSequence()
+    {
+        state = State.Dying;
+        rocketAudio.Stop();
+        rocketAudio.PlayOneShot(death);
+        Invoke("ReloadScene", 1.5f);
     }
 
     void LoadNextScene()
