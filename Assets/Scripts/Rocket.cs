@@ -43,7 +43,7 @@ public class Rocket : MonoBehaviour {
 
     void Thrust()
     {
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetButton("Fire1"))
         {
             rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
             if (!rocketAudio.isPlaying)
@@ -59,20 +59,34 @@ public class Rocket : MonoBehaviour {
         }
     }
 
+/*    void Thrust()
+    {
+        if (Input.GetAxis("Fire1") > 0)
+        {
+            print(Input.GetAxis("Fire1"));
+            rigidBody.AddRelativeForce(Vector3.up * mainThrust * Time.deltaTime);
+            if (!rocketAudio.isPlaying)
+            {
+                rocketAudio.PlayOneShot(mainEngine);
+            }
+            mainEngineParticles.Play();
+        }
+        else
+        {
+            rocketAudio.Stop();
+            mainEngineParticles.Stop();
+        }
+    }*/
+
     void Rotate()
     {
         rigidBody.angularVelocity = Vector3.zero;
 
         float rotationThisFrame = rcsThrust * Time.deltaTime;
 
-        if (Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.D))
-        {
-            transform.Rotate(Vector3.forward * rotationThisFrame);
-        }
-        if (Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.A))
-        {
-            transform.Rotate(-Vector3.forward * rotationThisFrame);
-        }
+        var x = Input.GetAxis("Horizontal");
+
+        transform.Rotate(0, 0, -x * rotationThisFrame);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -114,7 +128,7 @@ public class Rocket : MonoBehaviour {
         int nextSceneIndex = scene.buildIndex + 1;
         if(nextSceneIndex == SceneManager.sceneCountInBuildSettings)
         {
-            nextSceneIndex = 0;
+            SceneManager.LoadScene("End");
         }
         SceneManager.LoadScene(nextSceneIndex);
     }
